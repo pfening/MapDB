@@ -10,8 +10,8 @@ public class Database {
 	private static Connection conn;	
         private final String dbpath ="jdbc:sqlite:C:\\NetBeansProjects\\MapDB\\src\\mapdb\\dict.db";
         //private final String dbpath ="jdbc:sqlite:/home/pfg/NetBeansProjects/MapDB/src/mapdb/dict.db";
-	private Database() {
-		
+        
+	private Database() {		
 	}
 	
 	public static Database getInstance() {

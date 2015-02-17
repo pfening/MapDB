@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author pfeniga1
  */
-public class MapDB {
+public class GenerateBeans {
 
     public static void main(String[] args) throws Exception {
        
