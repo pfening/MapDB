@@ -27,9 +27,12 @@ public class MapDB {
 		ResultSet result = selectStatement.executeQuery();		
 		while(result.next()) {
                         String table = result.getString("name");
-                        File file = new File(System.getProperty("user.dir")+"/src/mapdb/"+table+"Bean.txt");
+                        File file = new File(System.getProperty("user.dir")+"/src/mapdb/"+table+"Bean.java");
                         if (!file.exists()) {file.createNewFile();}
                         PrintWriter writer = new PrintWriter(file.getAbsoluteFile(), "UTF-8");
+                        
+                        writer.println("package mapdb;");
+                        writer.println();
                         writer.println("public class "+table+"Bean {");
                         
                 PreparedStatement selectStatement1 = conn.prepareStatement("PRAGMA table_info('"+table+"') ");		
@@ -58,21 +61,38 @@ public class MapDB {
                         
                          attributes.add(new AttributesObject(varType,varName));
                         
-                        writer.println(atts+";");
-
-                      
+                        writer.println(atts+";");                      
 			}
+                
+                writer.println();
                 writer.println("public "+table+"Bean() {}");
-                writer.println("public "+table+"Bean("+attr.toString().substring(1, attr.toString().length()-1)+") {");
-
+                writer.println();
+                
+                writer.println("public "+table+"Bean("+attr.toString().substring(1, attr.toString().length()-1)+") {");                
+                
                 attributes.stream().forEach((m) -> {
-                    String t = m.type;
-                    String n = m.name;
-                    
-                    writer.println("this."+n+" = "+n);
+                    String n = m.name;                    
+                    writer.println("this."+n+" = "+n+";");
                 });
                 writer.println("}");  
+                writer.println();
+                
+                attributes.stream().forEach((m) -> {
+                    String n = m.name;
+                    String t = m.type;
+                    String nC = n.substring(0, 1).toUpperCase() + n.substring(1);
                     
+                writer.println("public "+t+" get"+nC+"() {");
+                writer.println("return "+n+";");
+                writer.println("}");
+                writer.println();
+                
+                writer.println("public void set"+nC+"("+t+" "+n+") {");
+                writer.println("this."+n+" = "+n+";");
+                writer.println("}"); 
+                writer.println();
+                });
+                
                 writer.println("}");
                 
 		result1.close();
@@ -83,8 +103,6 @@ public class MapDB {
 		selectStatement.close();     
     
                 Database.getInstance().disconnect(); 
-                
-                               
     }
    
 }
