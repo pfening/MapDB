@@ -30,7 +30,7 @@ listStatement.setString(4, selectedItem);
 ResultSet results = listStatement.executeQuery();
 while(results.next()) {
 usersBean entry = new usersBean();
-entry.setUserid(results.getint("userid"));
+entry.setUserid(results.getInt("userid"));
 entry.setUsername(results.getString("username"));
 entry.setPassword(results.getString("password"));
 entry.setLanguage(results.getString("language"));

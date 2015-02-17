@@ -31,9 +31,9 @@ listStatement.setString(5, selectedItem);
 ResultSet results = listStatement.executeQuery();
 while(results.next()) {
 dictionaryBean entry = new dictionaryBean();
-entry.setWordid(results.getint("wordid"));
-entry.setUserid(results.getint("userid"));
-entry.setLangid(results.getint("langid"));
+entry.setWordid(results.getInt("wordid"));
+entry.setUserid(results.getInt("userid"));
+entry.setLangid(results.getInt("langid"));
 entry.setM_word(results.getString("m_word"));
 entry.setF_word(results.getString("f_word"));
 dictionary.add(entry);

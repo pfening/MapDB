@@ -6,7 +6,7 @@ import java.util.List;
 public class Test1 {
 
     public static void main(String[] args) throws SQLException, Exception {
-        String lang="polish";
+        String lang="english";
         Database.getInstance().connect();
         languagesDAO d=new languagesDAO();
         d.setSelectedItem(lang);

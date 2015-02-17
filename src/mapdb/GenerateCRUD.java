@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -88,6 +89,22 @@ public class GenerateCRUD {
                 writer.print("\");");
                 writer.println();
                 
+                
+                
+                System.out.print("PreparedStatement listStatement = conn.prepareStatement(\"SELECT * FROM "+table+" where ");
+                
+                    //System.out.println(attributes.size()
+                
+                for (Iterator it = attributes.iterator(); it.hasNext();) {
+                AttributesObject m = (AttributesObject) it.next();
+                
+                String n = m.name;
+                System.out.print(n+"=? OR "); 
+                 
+                }
+                System.out.print("\");");
+                
+                
                 for (int as = 1; as < attributes.size()+1; as++){
                 writer.println("listStatement.setString("+as+", selectedItem);");                
                 }
@@ -99,8 +116,9 @@ public class GenerateCRUD {
                     String n = m.name;
                     String t = m.type;
                     String nC = n.substring(0, 1).toUpperCase() + n.substring(1);
+                    String tC = t.substring(0, 1).toUpperCase() + t.substring(1);
                     
-                    writer.println("entry.set"+nC+"(results.get"+t+"(\""+n+"\"));");
+                    writer.println("entry.set"+nC+"(results.get"+tC+"(\""+n+"\"));");
                     });                   
                     
                     writer.println(table+".add(entry);");                   

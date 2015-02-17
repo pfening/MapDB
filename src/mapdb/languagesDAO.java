@@ -22,7 +22,7 @@ this.selectedItem = selectedItem;
 public List<languagesBean> getList() throws SQLException, Exception{
 List<languagesBean> languages = new ArrayList<>();
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM languages where langid=? OR m_lang=? OR f_lang=?");
+PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM languages where langid=? OR m_lang=? OR f_lang=? OR ");
 listStatement.setString(1, selectedItem);
 listStatement.setString(2, selectedItem);
 listStatement.setString(3, selectedItem);
