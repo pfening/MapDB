@@ -22,7 +22,7 @@ this.selectedItem = selectedItem;
 public List<dictionaryBean> getList() throws SQLException, Exception{
 List<dictionaryBean> dictionary = new ArrayList<>();
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM dictionary where wordid=? OR userid=? OR langid=? OR m_word=? OR f_word=? OR ");
+PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM dictionary where wordid=? OR userid=? OR langid=? OR m_word=? OR f_word=?");
 listStatement.setString(1, selectedItem);
 listStatement.setString(2, selectedItem);
 listStatement.setString(3, selectedItem);
@@ -43,4 +43,15 @@ listStatement.close();
 return dictionary;
 }
 
+public void addData(dictionaryBean data) throws SQLException, Exception {
+Connection conn = Database.getInstance().getConnection();
+PreparedStatement addStatement = conn.prepareStatement("insert into dictionary (wordid, userid, langid, m_word, f_word) values (?, ?, ?, ?, ?)");
+addStatement.setInt(1, data.getWordid());
+addStatement.setInt(2, data.getUserid());
+addStatement.setInt(3, data.getLangid());
+addStatement.setString(4, data.getM_word());
+addStatement.setString(5, data.getF_word());
+addStatement.executeUpdate();
+addStatement.close();
+}
 }

@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -80,30 +81,18 @@ public class GenerateCRUD {
                 writer.println("public List<"+table+"Bean> getList() throws SQLException, Exception{");
                 writer.println("List<"+table+"Bean> "+table+" = new ArrayList<>();");	
 		writer.println("Connection conn = Database.getInstance().getConnection();");
-                
-		writer.print("PreparedStatement listStatement = conn.prepareStatement(\"SELECT * FROM "+table+" where ");
-                attributes.stream().forEach((m) -> {
-                String n = m.name;                    
-                     writer.print(n+"=? OR ");
-                });  
+
+                writer.print("PreparedStatement listStatement = conn.prepareStatement(\"SELECT * FROM "+table+" where ");                
+                for(int x = 0; x < attributes.size(); x++) {
+                String nn = attributes.get(x).name;    
+                    if (x < attributes.size()-1){                
+                writer.print(nn+"=? OR ");
+                    }else{
+                        writer.print(nn+"=?");
+                    }
+                }
                 writer.print("\");");
                 writer.println();
-                
-                
-                
-                System.out.print("PreparedStatement listStatement = conn.prepareStatement(\"SELECT * FROM "+table+" where ");
-                
-                    //System.out.println(attributes.size()
-                
-                for (Iterator it = attributes.iterator(); it.hasNext();) {
-                AttributesObject m = (AttributesObject) it.next();
-                
-                String n = m.name;
-                System.out.print(n+"=? OR "); 
-                 
-                }
-                System.out.print("\");");
-                
                 
                 for (int as = 1; as < attributes.size()+1; as++){
                 writer.println("listStatement.setString("+as+", selectedItem);");                
@@ -126,11 +115,37 @@ public class GenerateCRUD {
 		writer.println("results.close();");
 		writer.println("listStatement.close();");
                 writer.println("return "+table+";");           
-                writer.println("}");
-
+                writer.println("}");                
                 writer.println();
-                writer.println("}");
+                //end of getList
                 
+                //addItem
+                writer.println("public void addData("+table+"Bean data) throws SQLException, Exception {");		
+		writer.println("Connection conn = Database.getInstance().getConnection();");		
+		writer.print("PreparedStatement addStatement = conn.prepareStatement(\"insert into "+table+" (");
+                
+                attributes.stream().filter(item -> !item.equals(attributes.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print(e.name+", "));
+                writer.print(attributes.stream().reduce((a, b) -> b).get().name);
+                writer.print(") values (");                
+                attributes.stream().filter(item -> !item.equals(attributes.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print("?, "));
+                writer.print("?");                 
+                writer.print(")\");");
+                writer.println();
+                
+                for (int as = 1; as < attributes.size()+1; as++){
+                String n = attributes.get(as-1).name;
+                String t = attributes.get(as-1).type;
+                String nC = n.substring(0, 1).toUpperCase() + n.substring(1);
+                String tC = t.substring(0, 1).toUpperCase() + t.substring(1);  
+                    
+                writer.println("addStatement.set"+tC+"("+as+", data.get"+nC+"());");                
+                }               
+		writer.println("addStatement.executeUpdate();");		
+		writer.println("addStatement.close();");		
+                writer.println("}");                
+                //end of addItem
+                
+                writer.println("}");                
 		result1.close();
 		selectStatement1.close(); 
                 writer.close(); 

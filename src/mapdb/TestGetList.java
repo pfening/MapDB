@@ -3,7 +3,7 @@ package mapdb;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Test1 {
+public class TestGetList {
 
     public static void main(String[] args) throws SQLException, Exception {
         String lang="english";

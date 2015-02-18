@@ -22,7 +22,7 @@ this.selectedItem = selectedItem;
 public List<languagesBean> getList() throws SQLException, Exception{
 List<languagesBean> languages = new ArrayList<>();
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM languages where langid=? OR m_lang=? OR f_lang=? OR ");
+PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM languages where langid=? OR m_lang=? OR f_lang=?");
 listStatement.setString(1, selectedItem);
 listStatement.setString(2, selectedItem);
 listStatement.setString(3, selectedItem);
@@ -39,4 +39,13 @@ listStatement.close();
 return languages;
 }
 
+public void addData(languagesBean data) throws SQLException, Exception {
+Connection conn = Database.getInstance().getConnection();
+PreparedStatement addStatement = conn.prepareStatement("insert into languages (langid, m_lang, f_lang) values (?, ?, ?)");
+addStatement.setInt(1, data.getLangid());
+addStatement.setString(2, data.getM_lang());
+addStatement.setString(3, data.getF_lang());
+addStatement.executeUpdate();
+addStatement.close();
+}
 }

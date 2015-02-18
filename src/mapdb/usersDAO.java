@@ -22,7 +22,7 @@ this.selectedItem = selectedItem;
 public List<usersBean> getList() throws SQLException, Exception{
 List<usersBean> users = new ArrayList<>();
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM users where userid=? OR username=? OR password=? OR language=? OR ");
+PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM users where userid=? OR username=? OR password=? OR language=?");
 listStatement.setString(1, selectedItem);
 listStatement.setString(2, selectedItem);
 listStatement.setString(3, selectedItem);
@@ -41,4 +41,14 @@ listStatement.close();
 return users;
 }
 
+public void addData(usersBean data) throws SQLException, Exception {
+Connection conn = Database.getInstance().getConnection();
+PreparedStatement addStatement = conn.prepareStatement("insert into users (userid, username, password, language) values (?, ?, ?, ?)");
+addStatement.setInt(1, data.getUserid());
+addStatement.setString(2, data.getUsername());
+addStatement.setString(3, data.getPassword());
+addStatement.setString(4, data.getLanguage());
+addStatement.executeUpdate();
+addStatement.close();
+}
 }
