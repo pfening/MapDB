@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -121,20 +122,21 @@ public class GenerateCRUD {
                 
                 //addItem
                 writer.println("public void addData("+table+"Bean data) throws SQLException, Exception {");		
-		writer.println("Connection conn = Database.getInstance().getConnection();");		
-		writer.print("PreparedStatement addStatement = conn.prepareStatement(\"insert into "+table+" (");
+		writer.println("Connection conn = Database.getInstance().getConnection();");	
                 
-                attributes.stream().filter(item -> !item.equals(attributes.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print(e.name+", "));
-                writer.print(attributes.stream().reduce((a, b) -> b).get().name);
+		writer.print("PreparedStatement addStatement = conn.prepareStatement(\"insert into "+table+" ("); 
+                List<AttributesObject> collect = attributes.stream().skip(1).collect(Collectors.toList());
+                collect.stream().filter(item -> !item.equals(collect.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print(e.name+", "));
+                writer.print(collect.stream().reduce((a, b) -> b).get().name);
                 writer.print(") values (");                
-                attributes.stream().filter(item -> !item.equals(attributes.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print("?, "));
+                collect.stream().filter(item -> !item.equals(collect.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print("?, "));
                 writer.print("?");                 
                 writer.print(")\");");
                 writer.println();
                 
-                for (int as = 1; as < attributes.size()+1; as++){
-                String n = attributes.get(as-1).name;
-                String t = attributes.get(as-1).type;
+                for (int as = 1; as < collect.size()+1; as++){
+                String n = attributes.get(as).name;
+                String t = attributes.get(as).type;
                 String nC = n.substring(0, 1).toUpperCase() + n.substring(1);
                 String tC = t.substring(0, 1).toUpperCase() + t.substring(1);  
                     

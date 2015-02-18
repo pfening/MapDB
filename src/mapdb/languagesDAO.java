@@ -41,10 +41,9 @@ return languages;
 
 public void addData(languagesBean data) throws SQLException, Exception {
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement addStatement = conn.prepareStatement("insert into languages (langid, m_lang, f_lang) values (?, ?, ?)");
-addStatement.setInt(1, data.getLangid());
-addStatement.setString(2, data.getM_lang());
-addStatement.setString(3, data.getF_lang());
+PreparedStatement addStatement = conn.prepareStatement("insert into languages (m_lang, f_lang) values (?, ?)");
+addStatement.setString(1, data.getM_lang());
+addStatement.setString(2, data.getF_lang());
 addStatement.executeUpdate();
 addStatement.close();
 }

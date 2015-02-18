@@ -45,12 +45,11 @@ return dictionary;
 
 public void addData(dictionaryBean data) throws SQLException, Exception {
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement addStatement = conn.prepareStatement("insert into dictionary (wordid, userid, langid, m_word, f_word) values (?, ?, ?, ?, ?)");
-addStatement.setInt(1, data.getWordid());
-addStatement.setInt(2, data.getUserid());
-addStatement.setInt(3, data.getLangid());
-addStatement.setString(4, data.getM_word());
-addStatement.setString(5, data.getF_word());
+PreparedStatement addStatement = conn.prepareStatement("insert into dictionary (userid, langid, m_word, f_word) values (?, ?, ?, ?)");
+addStatement.setInt(1, data.getUserid());
+addStatement.setInt(2, data.getLangid());
+addStatement.setString(3, data.getM_word());
+addStatement.setString(4, data.getF_word());
 addStatement.executeUpdate();
 addStatement.close();
 }

@@ -43,11 +43,10 @@ return users;
 
 public void addData(usersBean data) throws SQLException, Exception {
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement addStatement = conn.prepareStatement("insert into users (userid, username, password, language) values (?, ?, ?, ?)");
-addStatement.setInt(1, data.getUserid());
-addStatement.setString(2, data.getUsername());
-addStatement.setString(3, data.getPassword());
-addStatement.setString(4, data.getLanguage());
+PreparedStatement addStatement = conn.prepareStatement("insert into users (username, password, language) values (?, ?, ?)");
+addStatement.setString(1, data.getUsername());
+addStatement.setString(2, data.getPassword());
+addStatement.setString(3, data.getLanguage());
 addStatement.executeUpdate();
 addStatement.close();
 }
