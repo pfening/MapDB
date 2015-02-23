@@ -10,11 +10,10 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -83,7 +82,7 @@ public class GenerateCRUD {
                 writer.println("List<"+table+"Bean> "+table+" = new ArrayList<>();");	
 		writer.println("Connection conn = Database.getInstance().getConnection();");
 
-                writer.print("PreparedStatement listStatement = conn.prepareStatement(\"SELECT * FROM "+table+" where ");                
+                writer.print("PreparedStatement listStatement = conn.prepareStatement(\"SELECT * FROM "+table+" WHERE ");                
                 for(int x = 0; x < attributes.size(); x++) {
                 String nn = attributes.get(x).name;    
                     if (x < attributes.size()-1){                
@@ -124,11 +123,13 @@ public class GenerateCRUD {
                 writer.println("public void addData("+table+"Bean data) throws SQLException, Exception {");		
 		writer.println("Connection conn = Database.getInstance().getConnection();");	
                 
-		writer.print("PreparedStatement addStatement = conn.prepareStatement(\"insert into "+table+" ("); 
+
+		writer.print("PreparedStatement addStatement = conn.prepareStatement(\"INSERT INTO "+table+" ("); 
                 List<AttributesObject> collect = attributes.stream().skip(1).collect(Collectors.toList());
                 collect.stream().filter(item -> !item.equals(collect.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print(e.name+", "));
                 writer.print(collect.stream().reduce((a, b) -> b).get().name);
-                writer.print(") values (");                
+                writer.print(") VALUES (");                
+
                 collect.stream().filter(item -> !item.equals(collect.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print("?, "));
                 writer.print("?");                 
                 writer.print(")\");");
@@ -144,8 +145,61 @@ public class GenerateCRUD {
                 }               
 		writer.println("addStatement.executeUpdate();");		
 		writer.println("addStatement.close();");		
-                writer.println("}");                
+                writer.println("}"); 
+                writer.println();
                 //end of addItem
+                
+                //updateItem
+                writer.println("public void updateData("+table+"Bean data) throws SQLException, Exception {");		
+		writer.println("Connection conn = Database.getInstance().getConnection();");	
+		writer.print("PreparedStatement updateStatement = conn.prepareStatement(\"UPDATE "+table+" SET "); 
+                //attributes.stream().filter(item -> !item.equals(attributes.stream().reduce((a, b) -> a).get())).forEach((e) -> writer.print(e.name+"=?, "));  
+                
+                List<AttributesObject> collect1 = attributes.stream().skip(1).collect(Collectors.toList());
+                collect1.stream().filter(item -> !item.equals(collect1.stream().reduce((a, b) -> b).get())).forEach((e) -> writer.print(e.name+"=?, "));
+                writer.print(collect.stream().reduce((a, b) -> b).get().name);
+                
+                writer.print("=? WHERE ");  
+                writer.print(attributes.stream().reduce((a, b) -> a).get().name);
+                writer.print("=?\");");                 
+                writer.println();
+                
+                for (int as = 1; as < attributes.stream().skip(1).collect(Collectors.toList()).size()+1; as++){
+                String n = attributes.get(as).name;
+                String t = attributes.get(as).type;
+                String nC = n.substring(0, 1).toUpperCase() + n.substring(1);
+                String tC = t.substring(0, 1).toUpperCase() + t.substring(1);                      
+                writer.println("updateStatement.set"+tC+"("+as+", data.get"+nC+"());");                
+                }      
+                String n = attributes.get(0).name;
+                String nC = n.substring(0, 1).toUpperCase() + n.substring(1);                    
+                writer.println("updateStatement.setInt("+attributes.size()+", data.get"+nC+"());");
+		writer.println("updateStatement.executeUpdate();");		
+		writer.println("updateStatement.close();");		
+                writer.println("}"); 
+                writer.println();
+                //end of updateItem
+                
+                
+                //deleteItem
+                writer.println("public void deleteData("+table+"Bean data) throws SQLException, Exception {");		
+		writer.println("Connection conn = Database.getInstance().getConnection();");	                
+		writer.print("PreparedStatement deleteStatement = conn.prepareStatement(\"DELETE FROM "+table+" WHERE ");                
+                writer.print(attributes.stream().reduce((a, b) -> a).get().name);
+                writer.print("=?");               
+               
+                writer.print("\");");
+                writer.println();
+
+                n = attributes.get(0).name;
+                nC = n.substring(0, 1).toUpperCase() + n.substring(1);                    
+                writer.println("deleteStatement.setInt(1, data.get"+nC+"());");                
+             
+		writer.println("deleteStatement.executeUpdate();");		
+		writer.println("deleteStatement.close();");		
+                writer.println("}"); 
+                writer.println();
+                //end of deleteItem
                 
                 writer.println("}");                
 		result1.close();

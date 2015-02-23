@@ -22,7 +22,7 @@ this.selectedItem = selectedItem;
 public List<usersBean> getList() throws SQLException, Exception{
 List<usersBean> users = new ArrayList<>();
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM users where userid=? OR username=? OR password=? OR language=?");
+PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM users WHERE userid=? OR username=? OR password=? OR language=?");
 listStatement.setString(1, selectedItem);
 listStatement.setString(2, selectedItem);
 listStatement.setString(3, selectedItem);
@@ -43,11 +43,31 @@ return users;
 
 public void addData(usersBean data) throws SQLException, Exception {
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement addStatement = conn.prepareStatement("insert into users (username, password, language) values (?, ?, ?)");
+PreparedStatement addStatement = conn.prepareStatement("INSERT INTO users (username, password, language) VALUES (?, ?, ?)");
 addStatement.setString(1, data.getUsername());
 addStatement.setString(2, data.getPassword());
 addStatement.setString(3, data.getLanguage());
 addStatement.executeUpdate();
 addStatement.close();
 }
+
+public void updateData(usersBean data) throws SQLException, Exception {
+Connection conn = Database.getInstance().getConnection();
+PreparedStatement updateStatement = conn.prepareStatement("UPDATE users SET username=?, password=?, language=? WHERE userid=?");
+updateStatement.setString(1, data.getUsername());
+updateStatement.setString(2, data.getPassword());
+updateStatement.setString(3, data.getLanguage());
+updateStatement.setInt(4, data.getUserid());
+updateStatement.executeUpdate();
+updateStatement.close();
+}
+
+public void deleteData(usersBean data) throws SQLException, Exception {
+Connection conn = Database.getInstance().getConnection();
+PreparedStatement deleteStatement = conn.prepareStatement("DELETE FROM users WHERE userid=?");
+deleteStatement.setInt(1, data.getUserid());
+deleteStatement.executeUpdate();
+deleteStatement.close();
+}
+
 }

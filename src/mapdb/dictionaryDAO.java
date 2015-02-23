@@ -22,7 +22,7 @@ this.selectedItem = selectedItem;
 public List<dictionaryBean> getList() throws SQLException, Exception{
 List<dictionaryBean> dictionary = new ArrayList<>();
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM dictionary where wordid=? OR userid=? OR langid=? OR m_word=? OR f_word=?");
+PreparedStatement listStatement = conn.prepareStatement("SELECT * FROM dictionary WHERE wordid=? OR userid=? OR langid=? OR m_word=? OR f_word=?");
 listStatement.setString(1, selectedItem);
 listStatement.setString(2, selectedItem);
 listStatement.setString(3, selectedItem);
@@ -45,7 +45,7 @@ return dictionary;
 
 public void addData(dictionaryBean data) throws SQLException, Exception {
 Connection conn = Database.getInstance().getConnection();
-PreparedStatement addStatement = conn.prepareStatement("insert into dictionary (userid, langid, m_word, f_word) values (?, ?, ?, ?)");
+PreparedStatement addStatement = conn.prepareStatement("INSERT INTO dictionary (userid, langid, m_word, f_word) VALUES (?, ?, ?, ?)");
 addStatement.setInt(1, data.getUserid());
 addStatement.setInt(2, data.getLangid());
 addStatement.setString(3, data.getM_word());
@@ -53,4 +53,25 @@ addStatement.setString(4, data.getF_word());
 addStatement.executeUpdate();
 addStatement.close();
 }
+
+public void updateData(dictionaryBean data) throws SQLException, Exception {
+Connection conn = Database.getInstance().getConnection();
+PreparedStatement updateStatement = conn.prepareStatement("UPDATE dictionary SET userid=?, langid=?, m_word=?, f_word=? WHERE wordid=?");
+updateStatement.setInt(1, data.getUserid());
+updateStatement.setInt(2, data.getLangid());
+updateStatement.setString(3, data.getM_word());
+updateStatement.setString(4, data.getF_word());
+updateStatement.setInt(5, data.getWordid());
+updateStatement.executeUpdate();
+updateStatement.close();
+}
+
+public void deleteData(dictionaryBean data) throws SQLException, Exception {
+Connection conn = Database.getInstance().getConnection();
+PreparedStatement deleteStatement = conn.prepareStatement("DELETE FROM dictionary WHERE wordid=?");
+deleteStatement.setInt(1, data.getWordid());
+deleteStatement.executeUpdate();
+deleteStatement.close();
+}
+
 }
